@@ -6,7 +6,8 @@ StockController.addStockToPortfolio = (req, res, next) => {
         tickerSymbol: req.body.ticker,
         buyingPrice: req.body.buyingPrice,
         portfolioId: req.body.portfolioId,
-        datePurchased: req.body.datePurchased
+        datePurchased: req.body.datePurchased,
+        quantity: req.body.quantity
     })
     .then(stock =>{
         res.send(stock)
