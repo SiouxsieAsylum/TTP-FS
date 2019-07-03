@@ -10,13 +10,15 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 
+const StockRouter = require('./routes/stockRoutes');
+const UserRouter = require('./routes/userRoutes');
+
 const app = express();
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(PORT + ' is open');
 });
-
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -31,6 +33,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(methodOverride('_method'));
+
+app.use('/user', UserRouter);
+app.use('/portfolio', StockRouter);
 
 app.get('/', (req, res) => {
     res.send('yo')

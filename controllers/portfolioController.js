@@ -12,12 +12,16 @@ PortfolioController.create = (req,res,next) => {
     .catch(err => {
         console.log(err);
     })
-    //create portfolio
 }
 
 PortfolioController.getFullPortfolio = (req,res,next) => {
-    //get all stocks for the current Portfolio
-    //should work for both transactions view and default port view 
+    Portfolio.getPortfolioStocks({
+        id: req.body.id
+    })
+    .then(portfolio => {
+        res.send(portfolio)
+    })
+    .catch(err => console.log(err))
 }
 
-export default PortfolioController;
+module.exports = PortfolioController;

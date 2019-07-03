@@ -6,28 +6,33 @@ const UserController = {};
 UserController.createUser = (req, res, next) => {
     const salt = bcrypt.genSaltSync();
     const hash = bcrypt.hashSync(req.body.password, salt);
-    User.create({
+    const userPromise = User.create({
         email: req.body.email,
         password: hash,
-        name: req.body.fullName,
+        name: req.body.name,
         balance: process.env.INITIAL_BALANCE
     })
-    .then(user=> {
-        Portfolio.create(user.id, `${user.name}'s Default Portfolio`);
+
+    const portfolioPromise = userPromise.then(user => {
+        console.log(user)
+        let defaultPortfolio = {
+            userId: user.userid,
+            name: `${user.name}'s Default Portfolio`
+        }
+        return Portfolio.create(defaultPortfolio);
     })
-    .then(portfolio => {
-        res.send(`${user.name} has a portfolio called ${portfolio.name}`)
+
+    Promise.all([userPromise, portfolioPromise])
+    .then(([user, portfolio]) => {
+        res.send(`${user.name} is logged in, displaying ${portfolio.name}, under user ${portfolio.userId}`)
     })
     .catch(err => {
         console.log(err);
     })
-    //create user
-    //create portfolio with user id 
-    //login user
 }
 
 UserController.updateBalance = (req, res, next) => {
     //update user balance 
 }
 
-export default UserController;
+module.exports = UserController;

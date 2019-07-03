@@ -1,19 +1,24 @@
 const Stock = require('../models/Stock');
+const User = require('../models/User');
 const StockController = {};
 
 StockController.addStockToPortfolio = (req, res, next) => {
-    Stock.create({
-        tickerSymbol: req.body.ticker,
-        buyingPrice: req.body.buyingPrice,
-        portfolioId: req.body.portfolioId,
-        datePurchased: req.body.datePurchased,
-        quantity: req.body.quantity
-    })
-    .then(stock =>{
-        res.send(stock)
+    Promise.all([
+        Stock.create({
+            tickerSymbol: req.body.ticker,
+            buyingPrice: req.body.buyingPrice,
+            portfolioId: req.body.portfolioId,
+            datePurchased: req.body.datePurchased,
+            quantity: req.body.quantity
+        }),
+        User.updateBalance({
+            userId: req.user.id,
+            balance: req.body.balance
+        })
+    ]).then(allData =>{
+        res.json(allData)
     })
     .catch(err => console.log(error))
-
 }
 
-export default StockController;
+module.exports = StockController;
