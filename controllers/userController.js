@@ -14,7 +14,6 @@ UserController.createUser = (req, res, next) => {
     })
 
     const portfolioPromise = userPromise.then(user => {
-        console.log(user)
         let defaultPortfolio = {
             userId: user.userid,
             name: `${user.name}'s Default Portfolio`
@@ -32,7 +31,14 @@ UserController.createUser = (req, res, next) => {
 }
 
 UserController.updateBalance = (req, res, next) => {
-    //update user balance 
+    User.updateBalance({
+        balance: req.body.balance,
+        userId: req.user.id
+    })
+    .then(user => {
+        res.send(user)
+    })
+    .catch(err => console.log(err))
 }
 
 module.exports = UserController;

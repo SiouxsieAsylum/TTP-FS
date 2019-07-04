@@ -21,6 +21,8 @@ UserRouter.get('/verify', (req, res) => {
    }
 });
 
+UserRouter.post('/purchase', UserController.updateBalance)
+
 UserRouter.get('/logout', (req, res) => {
   req.logout();
   res.send('loggedout')
