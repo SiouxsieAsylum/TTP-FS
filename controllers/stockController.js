@@ -21,4 +21,13 @@ StockController.addStockToPortfolio = (req, res, next) => {
     .catch(err => console.log(error))
 }
 
+StockController.getAllTrades = (req, res, next) => {
+    Promise.all([
+        Stock.getAllUserStocks(req.user.id),
+    ]).then(allData =>{
+        res.json(allData)
+    })
+    .catch(err => console.log(error))
+}
+
 module.exports = StockController;

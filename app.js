@@ -11,6 +11,7 @@ const session = require('express-session');
 const passport = require('passport');
 
 const StockRouter = require('./routes/stockRoutes');
+const PortfolioRouter = require('./routes/portfolioRoutes');
 const UserRouter = require('./routes/userRoutes');
 
 const app = express();
@@ -35,10 +36,13 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 
 app.use('/user', UserRouter);
-app.use('/portfolio', StockRouter);
+app.use('/portfolio', PortfolioRouter);
+app.use('/stocks', StockRouter);
+
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('/', (req, res) => {
-    res.send('yo')
+    res.sendFile(__dirname, 'client/build', 'index.html')
 });
 
 app.use('*', (req, res) => {

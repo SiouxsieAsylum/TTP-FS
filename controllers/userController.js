@@ -23,7 +23,7 @@ UserController.createUser = (req, res, next) => {
 
     Promise.all([userPromise, portfolioPromise])
     .then(([user, portfolio]) => {
-        res.send(`${user.name} is logged in, displaying ${portfolio.name}, under user ${portfolio.userId}`)
+        res.json({user, portfolio})
     })
     .catch(err => {
         console.log(err);
