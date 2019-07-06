@@ -16,7 +16,7 @@ PortfolioController.create = (req,res) => {
 
 PortfolioController.getFullPortfolio = (req,res) => {
     Portfolio.getPortfolioStocks({
-        id: req.body.id
+        id: req.params.id
     })
     .then(portfolio => {
         res.send(portfolio)

@@ -1,12 +1,9 @@
 import React from 'react';
 import UseAuthForm from './AuthHooks'
-// import Login from './Login';
-// import Register from './Register';
 
 
 const Auth = (props) => {
    const  {inputs, handleChange, handleSubmit} = UseAuthForm(props.authHandler);
-    console.log(inputs);
     return (
         <form onSubmit={handleSubmit}>
             { props.authType === 'register' && 

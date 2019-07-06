@@ -10,7 +10,7 @@ Portfolio.getDefaultPortfolio = userId => {
 }
 
 Portfolio.getPortfolioStocks = portfolio => {
-    return db.oneOrMany(`Select * FROM portfolios JOIN stocks ON portfolios.portfolioId = stocks.portfolioid where portfolio.portfolioid = $1`, [portfolio.id])
+    return db.any(`Select * FROM stocks JOIN portfolios ON portfolios.portfolioId = stocks.portfolioid where portfolios.portfolioid = $1`, [portfolio.id])
 }
 
 module.exports = Portfolio;

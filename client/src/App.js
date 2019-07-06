@@ -14,14 +14,16 @@ class App extends Component {
     this.state = {
       isLoggedIn: false,
       loginAttemptFailed: false,
-      authType: null,
+      authType: 'login', //TODO: set to null
       user: {},
-      portfolioId: null
+      portfolio: {}
     }
 
     this.authHandler = this.authHandler.bind(this);
+    this.authRemover = this.authRemover.bind(this);
     this.setAuthType = this.setAuthType.bind(this);
     this.setStockView = this.setStockView.bind(this);
+    this.updateUserBalance = this.updateUserBalance.bind(this);
   }
 
   setStockView = (type) => {
@@ -37,7 +39,6 @@ class App extends Component {
   }
 
   authHandler = (user) => {
-    console.log(user)
     fetch(`/api/user/${this.state.authType}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json'},
@@ -56,11 +57,10 @@ class App extends Component {
             loginAttemptFailed: false,
             authType: null,
             user: Object.assign(prevState.user, alldata.user),
-            portfolioId: alldata.portfolio.portfolioId
+            portfolio: Object.assign(prevState.portfolio, alldata.portfolio)
           }
         })
       }
-      
     })
     .catch((err) =>{
       this.setState({
@@ -82,26 +82,25 @@ class App extends Component {
     .catch()
   }
 
-  // register = (user) => {
-  //   fetch('/register', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json'},
-  //     body: JSON.stringify(user)
-  //   })
-  //   .then(res => res.json())
-  //   .then((alldata)=>{
-  //     this.setState({
-  //       isLoggedIn: true,
-  //       userId: alldata.user.userId;
-  //       portfolioId: alldata.portfolio.portfolioId
-  //     })
-  //   })
-  //   .catch((err) =>{
-  //     this.setState({
-  //       loginAttemptFailed: true
-  //     })
-  //   })
-  // }
+  updateUserBalance = (balance) => {
+    return fetch('api/user/purchase', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        userId: this.state.user.userId,
+        balance: balance
+      }
+    })
+    .then(user => {
+      this.setState(prevState => {
+        user: Object.assign(prevState.user, user)
+      })
+      return user;
+    })
+    .catch(err => console.log(err));
+  }
   
   render (){
 
@@ -115,7 +114,8 @@ class App extends Component {
     } else {
       currentView = <StockViewContainer
         user={this.state.user}
-        portfolioId={this.state.portfolioId}
+        portfolio={this.state.portfolio}
+        updateUserBalance={this.updateUserBalance}
         />
     }
 
@@ -124,6 +124,8 @@ class App extends Component {
         <NavBar 
           setAuthType={this.setAuthType}
           setStockView={this.setStockView}
+          isLoggedIn={this.isLoggedIn}
+          user={this.user}
           />
         {currentView}
       

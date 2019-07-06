@@ -1,5 +1,5 @@
 const UserController = require('../controllers/userController');
-const Portfolio = require('../models/Portfolio')
+const Portfolio = require('../models/Portfolio');
 const express = require('express');
 const UserRouter = express.Router();
 const passport = require('../services/auth/local');
