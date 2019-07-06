@@ -35,14 +35,15 @@ app.use(passport.session());
 
 app.use(methodOverride('_method'));
 
-app.use('/user', UserRouter);
-app.use('/portfolio', PortfolioRouter);
-app.use('/stocks', StockRouter);
+app.use('/api/user', UserRouter);
+app.use('/api/portfolio', PortfolioRouter);
+app.use('/api/stocks', StockRouter);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname, 'client/build', 'index.html')
+    //res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    res.send('ay yo ma')
 });
 
 app.use('*', (req, res) => {

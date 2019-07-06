@@ -1,7 +1,7 @@
 const Portfolio = require('../models/Portfolio');
 const PortfolioController = {};
 
-PortfolioController.create = (req,res,next) => {
+PortfolioController.create = (req,res) => {
     Portfolio.create({
         userId: req.user.id,
         name: req.body.name
@@ -14,7 +14,7 @@ PortfolioController.create = (req,res,next) => {
     })
 }
 
-PortfolioController.getFullPortfolio = (req,res,next) => {
+PortfolioController.getFullPortfolio = (req,res) => {
     Portfolio.getPortfolioStocks({
         id: req.body.id
     })

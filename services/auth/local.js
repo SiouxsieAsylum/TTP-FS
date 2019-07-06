@@ -11,7 +11,7 @@ init();
 
 passport.use(
   new LocalStrategy(options, (username, password, done) => {
-    console.log(username, passport)
+    console.log(username, password)
     User.findByEmail(username)
     .then(user => {
       console.log(user)
