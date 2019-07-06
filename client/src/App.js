@@ -52,13 +52,13 @@ class App extends Component {
         })
       } else {
           this.setState((prevState) =>{
-          return {
-            isLoggedIn: true,
-            loginAttemptFailed: false,
-            authType: null,
-            user: Object.assign(prevState.user, alldata.user),
-            portfolio: Object.assign(prevState.portfolio, alldata.portfolio)
-          }
+            return {
+              isLoggedIn: true,
+              loginAttemptFailed: false,
+              authType: null,
+              user: Object.assign(prevState.user, alldata.user),
+              portfolio: Object.assign(prevState.portfolio, alldata.portfolio)
+            }
         })
       }
     })
@@ -83,16 +83,17 @@ class App extends Component {
   }
 
   updateUserBalance = (balance) => {
+    let reqBody = {
+      balance: balance
+    }
     return fetch('api/user/purchase', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: {
-        userId: this.state.user.userId,
-        balance: balance
-      }
+      body: JSON.stringify(reqBody)
     })
+    .then(res => res.json())
     .then(user => {
       this.setState(prevState => {
         user: Object.assign(prevState.user, user)
@@ -127,7 +128,7 @@ class App extends Component {
           isLoggedIn={this.isLoggedIn}
           user={this.user}
           />
-        {currentView}
+        { currentView }
       
         <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></div>
       </div>

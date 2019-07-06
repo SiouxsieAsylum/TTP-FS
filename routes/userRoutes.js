@@ -29,7 +29,7 @@ UserRouter.get('/verify', (req,res) => {
    }
 });
 
-UserRouter.post('/purchase', UserController.updateBalance)
+UserRouter.put('/purchase', UserController.updateBalance)
 
 UserRouter.get('/logout', (req, res) => {
   req.logout();

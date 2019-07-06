@@ -19,7 +19,7 @@ PortfolioController.getFullPortfolio = (req,res) => {
         id: req.params.id
     })
     .then(portfolio => {
-        res.send(portfolio)
+        res.json(portfolio)
     })
     .catch(err => console.log(err))
 }

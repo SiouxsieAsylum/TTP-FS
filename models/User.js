@@ -11,7 +11,7 @@ User.create = user => {
 
 // balance calculation will be performed client-side
 User.updateBalance = update => {
-    return db.one(`UPDATE users SET balance=$1 where userId=$2 returning *`, [update.balance, update.id])
+    return db.one(`UPDATE users SET balance=$1 where userId=$2 returning *`, [update.balance, update.userId])
 }
 
 module.exports = User;

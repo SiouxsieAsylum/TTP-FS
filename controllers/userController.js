@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 const UserController = {};
 
 UserController.createUser = (req, res, next) => {
-    console.log(req.body)
     User.findByEmail(req.body.email)
     .then(user => {
         if (user) {
@@ -44,13 +43,14 @@ UserController.createUser = (req, res, next) => {
 
 }
 
-UserController.updateBalance = (req, res, next) => {
+UserController.updateBalance = (req, res) => {
+    console.log(req.user)
     User.updateBalance({
         balance: req.body.balance,
-        userId: req.user.id
+        userId: req.user.userid
     })
     .then(user => {
-        res.send(user)
+        res.json(user)
     })
     .catch(err => console.log(err))
 }

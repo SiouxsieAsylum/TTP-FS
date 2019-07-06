@@ -24,4 +24,4 @@ const UseStockForm = (callback) => {
     }
 }
 
-module.exports = UseStockForm;
+export default UseStockForm;
