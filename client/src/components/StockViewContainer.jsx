@@ -137,9 +137,17 @@ class StockViewContainer extends Component {
     render(){
         let view;
         if (this.state.view === 'addStock') {
-            view = <AddStock 
-                user={this.props.user} 
-                purchaseStock={this.purchaseStock} />
+            view = <main>  
+                        <Portfolio 
+                            stocks={this.state.fullPortfolioStockList}
+                            currentPrices={this.state.currentPortfolioStockPrices}
+                            />
+                        <AddStock 
+                        user={this.props.user} 
+                        purchaseStock={this.purchaseStock} />
+                    </main>
+
+
         }
 
         if (!this.props.isLoggedIn) return <Redirect to="\" />

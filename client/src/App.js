@@ -23,7 +23,62 @@ class App extends Component {
     this.authRemover = this.authRemover.bind(this);
     this.setAuthType = this.setAuthType.bind(this);
     this.setStockView = this.setStockView.bind(this);
+    this.setUserOnState = this.setUserOnState.bind(this);
+    this.autoAuthSessionRestore = this.autoAuthSessionRestore.bind(this);
     this.updateUserBalance = this.updateUserBalance.bind(this);
+    this.setTokenOnLocalStorage = this.setTokenOnLocalStorage.bind(this);
+  }
+
+  componentDidMount() {
+    let token = localStorage.getItem('sessionToken');
+    if (token){
+      let expiryDate = localStorage.getItem('sessionExpiry');
+      let expiryDateObj = new Date(expiryDate);
+      let today = new Date();
+  
+      if (today < expiryDateObj){
+        this.autoAuthSessionRestore(token);
+      } else {
+        localStorage.removeItem("sessionToken");
+        localStorage.removeItem('sessionExpiry');
+      }
+    }
+
+    return null;
+  }
+
+  autoAuthSessionRestore(token){
+    fetch(`/api/user/session/${token}`)
+    .then(allData => {
+      this.setUserOnState(allData)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  setUserOnState = (fetchData) => {
+    console.log('setting user', fetchData)
+    this.setState((prevState) =>{
+      return {
+        isLoggedIn: true,
+        loginAttemptFailed: false,
+        authType: null,
+        user: Object.assign(prevState.user, fetchData.user),
+        portfolio: Object.assign(prevState.portfolio, fetchData.portfolio),
+      }
+    })
+  }
+
+  setTokenOnLocalStorage = (user) => {
+    console.log(user)
+    localStorage.setItem('sessionToken', user.sessiontoken);
+    localStorage.setItem('sessionExpiry', user.sessionexpiry);
+
+    delete user.sessionToken
+    delete user.sessionExpiry
+
+    return user;
   }
 
   setStockView = (type) => {
@@ -51,15 +106,8 @@ class App extends Component {
           loginAttemptFailed: 'User Found'
         })
       } else {
-          this.setState((prevState) =>{
-            return {
-              isLoggedIn: true,
-              loginAttemptFailed: false,
-              authType: null,
-              user: Object.assign(prevState.user, alldata.user),
-              portfolio: Object.assign(prevState.portfolio, alldata.portfolio),
-            }
-        })
+        alldata.user = this.setTokenOnLocalStorage(alldata.user);
+        this.setUserOnState(alldata);
       }
     })
     .catch((err) =>{
@@ -78,8 +126,11 @@ class App extends Component {
         user: {},
         portfolioId: null
       })
+      localStorage.removeItem('sessionToken');
+      localStorage.removeItem('sessionExpiry');
+
     })
-    .catch()
+    .catch(err => console.log(err))
   }
 
   updateUserBalance = (balance) => {

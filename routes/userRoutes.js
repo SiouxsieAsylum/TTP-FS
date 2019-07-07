@@ -1,5 +1,6 @@
 const UserController = require('../controllers/userController');
 const Portfolio = require('../models/Portfolio');
+const User = require('../models/User');
 const express = require('express');
 const UserRouter = express.Router();
 const passport = require('../services/auth/local');
@@ -15,11 +16,16 @@ UserRouter.post('/login', passport.authenticate('local', {
 
 UserRouter.get('/verify', (req,res) => {
   if (req.user){
-      Portfolio.getDefaultPortfolio(req.user.userid)
-      .then(portfolio => {
+      const sessionObj = authHelpers.generateToken();
+      sessionObj.userId = req.user.userid;
+      Promise.all([
+        User.setNewSessionToken(sessionObj),
+        Portfolio.getDefaultPortfolio(req.user.userid)
+      ])
+      .then(allData => {
         let fullReturn = {
-          user: req.user,
-          portfolio
+          user: allData[0],
+          portfolio: allData[1]
         }
         return res.status(200).json(fullReturn)
       })
@@ -31,10 +37,10 @@ UserRouter.get('/verify', (req,res) => {
 
 UserRouter.put('/purchase', UserController.updateBalance)
 
-UserRouter.get('/logout', (req, res) => {
-  req.logout();
-  res.send('loggedout')
-});
+UserRouter.get('/logout', UserController.handleLogout);
+
+UserRouter.get('/session/:token', UserController.getUserBySession);
+
 
 
 module.exports = UserRouter;
