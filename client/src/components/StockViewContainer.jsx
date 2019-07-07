@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import AddStock from './AddStock';
 import endpoints from '../externals/endpoints';
 
@@ -140,6 +141,9 @@ class StockViewContainer extends Component {
                 user={this.props.user} 
                 purchaseStock={this.purchaseStock} />
         }
+
+        if (!this.props.isLoggedIn) return <Redirect to="\" />
+
         return view
     }
 }

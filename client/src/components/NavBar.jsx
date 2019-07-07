@@ -1,11 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 
 const NavBar = (props) => {
     return (
         <ul>
-            <li onClick={() => props.setAuthType('login')}>Login</li>
-            <li onClick={() => props.setAuthType('register')}>Register</li>
+            <Link to='/login'>
+                <li onClick={() => props.setAuthType('login')}>Login</li>
+            </Link >
+            <Link to='/register'>
+                <li onClick={() => props.setAuthType('register')}>Register</li>
+            </Link>
         </ul>
     )
 }

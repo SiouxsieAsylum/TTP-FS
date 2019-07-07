@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-const UseAuthForm = (callback) => {
+const UseAuthForm = (submitCallback, routerCallback) => {
     const [inputs, setInputValues] = useState({});
     const handleSubmit = (e) => {
         e && e.preventDefault();
@@ -11,7 +11,8 @@ const UseAuthForm = (callback) => {
 
         let fullUser = name ? {name, email, password} : {username, password}
 
-        callback(fullUser);
+        submitCallback(fullUser);
+        routerCallback()
     }
 
     const handleChange = (e) => {

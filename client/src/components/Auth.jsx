@@ -1,10 +1,15 @@
 import React from 'react';
+import {Redirect, withRouter} from 'react-router-dom';
 import UseAuthForm from './AuthHooks'
 
 
 const Auth = (props) => {
-   const  {inputs, handleChange, handleSubmit} = UseAuthForm(props.authHandler);
+    const  {inputs, handleChange, handleSubmit} = UseAuthForm(props.authHandler, () => {props.history.push('/portfolio')});
+    
+    if (props.isLoggedIn) return <Redirect to="\portfolio" />
+
     return (
+        
         <form onSubmit={handleSubmit}>
             { props.authType === 'register' && 
             <>
@@ -49,4 +54,4 @@ const Auth = (props) => {
 }
 
 
-export default Auth;
+export default withRouter(Auth);

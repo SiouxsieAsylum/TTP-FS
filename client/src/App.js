@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-
-
+import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import NavBar from './components/NavBar';
+import Landing from './components/Landing';
 import Auth from './components/Auth';
 import StockViewContainer from './components/StockViewContainer';
 
@@ -48,7 +48,7 @@ class App extends Component {
     .then((alldata)=>{
       if (this.state.authType === 'register' && alldata.userExists){
         this.setState({
-          loginAttemptFailed: true
+          loginAttemptFailed: 'User Found'
         })
       } else {
           this.setState((prevState) =>{
@@ -57,14 +57,14 @@ class App extends Component {
               loginAttemptFailed: false,
               authType: null,
               user: Object.assign(prevState.user, alldata.user),
-              portfolio: Object.assign(prevState.portfolio, alldata.portfolio)
+              portfolio: Object.assign(prevState.portfolio, alldata.portfolio),
             }
         })
       }
     })
     .catch((err) =>{
       this.setState({
-        loginAttemptFailed: true
+        loginAttemptFailed: 'User Not Found'
       })
     })
   }
@@ -102,36 +102,51 @@ class App extends Component {
     })
     .catch(err => console.log(err));
   }
-  
+
   render (){
 
     let currentView;
     if (!this.state.isLoggedIn){
-      currentView = <Auth
+      currentView = <Route exact path={"/" + this.state.authType} render={()=>(
+        <Auth
+        isLoggedIn={this.state.isLoggedIn}
         authType={this.state.authType}
         authHandler={this.authHandler}
-        loginAttemptFailed={this.state.loginAttemptFailed}
+        loginAttemptFailed={this.state.loginAttemptFailed} 
         />
+      )}/>
+
     } else {
-      currentView = <StockViewContainer
-        user={this.state.user}
-        portfolio={this.state.portfolio}
-        updateUserBalance={this.updateUserBalance}
-        />
+        currentView = <Route exact path="/portfolio" render={()=>(
+          <StockViewContainer
+            isLoggedIn={this.state.isLoggedIn}
+            user={this.state.user}
+            portfolio={this.state.portfolio}
+            updateUserBalance={this.updateUserBalance}
+            />
+        )}/>
+
     }
 
     return (
-      <div className="App">
-        <NavBar 
-          setAuthType={this.setAuthType}
-          setStockView={this.setStockView}
-          isLoggedIn={this.isLoggedIn}
-          user={this.user}
-          />
-        { currentView }
-      
-        <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></div>
-      </div>
+      <Router>
+        <div className="App">
+          <NavBar 
+            setAuthType={this.setAuthType}
+            setStockView={this.setStockView}
+            isLoggedIn={this.isLoggedIn}
+            user={this.user}
+            />
+            <Route exact path="/" render={()=>(   
+              <Landing />       
+            )}/>
+            
+            { currentView }
+
+        
+          <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></div>
+        </div>
+      </Router>
     );
   }
 }
