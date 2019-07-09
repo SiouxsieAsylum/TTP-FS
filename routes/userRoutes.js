@@ -37,7 +37,7 @@ UserRouter.get('/verify', (req,res) => {
 
 UserRouter.put('/purchase', UserController.updateBalance)
 
-UserRouter.get('/logout', UserController.handleLogout);
+UserRouter.get('/logout/:id', UserController.handleLogout);
 
 UserRouter.get('/session/:token', UserController.getUserBySession);
 

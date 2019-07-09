@@ -20,7 +20,7 @@ UserController.createUser = (req, res, next) => {
                 name: req.body.name,
                 balance: process.env.INITIAL_BALANCE,
                 sessionToken: sessionObj.sessionToken,
-                sessionExpiry: sessionObj.sesssionExpiry
+                sessionExpiry: sessionObj.sessionExpiry
             })
         
             const portfolioPromise = userPromise.then(user => {
@@ -48,9 +48,13 @@ UserController.createUser = (req, res, next) => {
 }
 
 UserController.getUserBySession = (req, res) => {
-    User.findBySession(req.params.token)
-    .then(user => {
-        res.json(user)
+    let userPromise = User.findBySession(req.params.token)
+    let portfolioPromise = userPromise.then(user => {
+        return Portfolio.getDefaultPortfolio(user.userid)
+    })
+    Promise.all([userPromise, portfolioPromise])
+    .then(([user, portfolio]) => {
+        res.json({user, portfolio})
     })
     .catch(err => console.log(err))
 }
@@ -61,13 +65,13 @@ UserController.updateBalance = (req, res) => {
         userId: req.user.userid
     })
     .then(user => {
-        res.json(user)
+        return user;
     })
     .catch(err => console.log(err))
 }
 
 UserController.handleLogout = (req, res) => {
-    User.removeSessionToken(req.user.id)
+    User.removeSessionToken(req.params.id)
     .then(_ => {
         req.logout();
         res.send('loggedout')

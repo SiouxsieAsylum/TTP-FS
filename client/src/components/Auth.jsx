@@ -6,7 +6,9 @@ import UseAuthForm from './AuthHooks'
 const Auth = (props) => {
     const  {inputs, handleChange, handleSubmit} = UseAuthForm(props.authHandler, () => {props.history.push('/portfolio')});
     
-    if (props.isLoggedIn) return <Redirect to="\portfolio" />
+    if (!props.authType) return <Redirect to="/" />
+    if (props.isLoggedIn) return <Redirect to="/portfolio" />
+
 
     return (
         

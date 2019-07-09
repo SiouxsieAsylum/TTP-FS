@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Landing from './components/Landing';
 import Auth from './components/Auth';
@@ -14,7 +14,7 @@ class App extends Component {
     this.state = {
       isLoggedIn: false,
       loginAttemptFailed: false,
-      authType: 'login', //TODO: set to null
+      authType: null,
       user: {},
       portfolio: {}
     }
@@ -49,6 +49,7 @@ class App extends Component {
 
   autoAuthSessionRestore(token){
     fetch(`/api/user/session/${token}`)
+    .then(res => res.json())
     .then(allData => {
       this.setUserOnState(allData)
     })
@@ -58,7 +59,6 @@ class App extends Component {
   }
 
   setUserOnState = (fetchData) => {
-    console.log('setting user', fetchData)
     this.setState((prevState) =>{
       return {
         isLoggedIn: true,
@@ -118,9 +118,8 @@ class App extends Component {
   }
 
   authRemover = () => {
-    fetch('/api/user/logout')
-    .then(res => res.json())
-    .then(json => {
+    fetch(`/api/user/logout/${this.state.user.userid}`)
+    .then(res => {
       this.setState({
         isLoggedIn: false,
         user: {},
@@ -158,17 +157,16 @@ class App extends Component {
 
     let currentView;
     if (!this.state.isLoggedIn){
-      currentView = <Route exact path={"/" + this.state.authType} render={()=>(
+      currentView = <Route exact path={"/:auth"} render={()=>(
         <Auth
         isLoggedIn={this.state.isLoggedIn}
         authType={this.state.authType}
         authHandler={this.authHandler}
-        loginAttemptFailed={this.state.loginAttemptFailed} 
-        />
+        loginAttemptFailed={this.state.loginAttemptFailed} />
       )}/>
 
     } else {
-        currentView = <Route exact path="/portfolio" render={()=>(
+        currentView = <Route path="/portfolio" render={()=>(
           <StockViewContainer
             isLoggedIn={this.state.isLoggedIn}
             user={this.state.user}
@@ -178,18 +176,20 @@ class App extends Component {
         )}/>
 
     }
-
     return (
       <Router>
         <div className="App">
           <NavBar 
             setAuthType={this.setAuthType}
+            logout={this.authRemover}
             setStockView={this.setStockView}
-            isLoggedIn={this.isLoggedIn}
-            user={this.user}
+            isLoggedIn={this.state.isLoggedIn}
+            user={this.state.user}
             />
             <Route exact path="/" render={()=>(   
-              <Landing />       
+              <Landing
+                isLoggedIn={this.state.isLoggedIn} 
+                />       
             )}/>
             
             { currentView }

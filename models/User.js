@@ -18,7 +18,7 @@ User.setNewSessionToken = session => {
 }
 
 User.removeSessionToken = userid => {
-    return db.none(`UPDATE users SET sessionToken=NULL, sessionExpiry=NULL where userId=$1`, [userId]);
+    return db.none(`UPDATE users SET sessionToken=NULL, sessionExpiry=NULL where userId=$1`, [userid]);
 }
 
 User.updateBalance = update => {

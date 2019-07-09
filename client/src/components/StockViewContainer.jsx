@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import AddStock from './AddStock';
+import Portfolio from './Portfolio';
+import TransactionAudit from './TransactionAudit';
+
 import endpoints from '../externals/endpoints';
 
 class StockViewContainer extends Component {
@@ -8,7 +10,7 @@ class StockViewContainer extends Component {
         super(props)
 
         this.state = {
-            view: 'addStock',
+            view: 'portfolio',
             purchaseFailed: false,
             fullPortfolioStockList: [],
             currentPortfolioStockPrices: {}
@@ -24,10 +26,9 @@ class StockViewContainer extends Component {
         this.getPortfolioStocks(this.props.portfolio)
         .then(stocks => {
             if (stocks.length){
-                console.log('stocks',stocks)
                 this.fetchCurrentStockPrices(stocks)
                 .then(_ => {
-                    console.log(this.state)
+                    console.log("stock prices fetched")
                 })
                 .catch(err => {
                     console.log(err)
@@ -47,6 +48,7 @@ class StockViewContainer extends Component {
             headers:{
                 'Content-Type': 'application/json'
             },
+            credentials: "include",
             body: JSON.stringify(obj)
         })
         .then(r => r.json())
@@ -120,7 +122,7 @@ class StockViewContainer extends Component {
         })
         let symbolArray = Object.keys(allSymbols);
         let symbolString = symbolArray.join(',');
-        fetch(endpoints.IEX + '?symbols=' + symbolString)
+        return fetch(endpoints.IEX + '?symbols=' + symbolString)
         .then(res => res.json())
         .then(stockArray => {
             this.setState(_ => {
@@ -136,23 +138,25 @@ class StockViewContainer extends Component {
 
     render(){
         let view;
-        if (this.state.view === 'addStock') {
-            view = <main>  
-                        <Portfolio 
+        if (this.state.view === 'portfolio') {
+            view = <Portfolio 
                             stocks={this.state.fullPortfolioStockList}
                             currentPrices={this.state.currentPortfolioStockPrices}
+                            user={this.props.user} 
+                            purchaseStock={this.purchaseStock}
                             />
-                        <AddStock 
-                        user={this.props.user} 
-                        purchaseStock={this.purchaseStock} />
-                    </main>
-
-
+        } else {
+            view = <TransactionAudit
+                         />
         }
 
         if (!this.props.isLoggedIn) return <Redirect to="\" />
 
-        return view
+        return (
+            <main>
+                {view}
+            </main>
+        )
     }
 }
 
