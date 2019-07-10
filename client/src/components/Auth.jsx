@@ -1,18 +1,25 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Redirect, withRouter} from 'react-router-dom';
+import lifecycle from 'react-pure-lifecycle';
 import UseAuthForm from './AuthHooks'
 
 
 const Auth = (props) => {
     const  {inputs, handleChange, handleSubmit} = UseAuthForm(props.authHandler, () => {props.history.push('/portfolio')});
     
-    if (!props.authType) return <Redirect to="/" />
+    const params = props.match.params;
+
+    useEffect(() => {
+        if (params.auth) props.setAuthType(params.auth)
+    })
+
     if (props.isLoggedIn) return <Redirect to="/portfolio" />
+
 
 
     return (
         
-        <form onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleSubmit}>
             { props.authType === 'register' && 
             <>
                 <label htmlFor="name">Name</label>
@@ -43,14 +50,17 @@ const Auth = (props) => {
             }
             
 
-            
-            <label htmlFor="password">Password</label>
-            <input
-                onChange={handleChange}
-                type="password" 
-                value={inputs.password}
-                name="password" required/>
-            <input type="submit" />
+            {props.authType && 
+            <>
+                <label htmlFor="password">Password</label>
+                <input
+                    onChange={handleChange}
+                    type="password" 
+                    value={inputs.password}
+                    name="password" required/>
+                <input type="submit" />
+            </>
+        }
         </form>
     )
 }

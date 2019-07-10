@@ -10,7 +10,7 @@ class StockViewContainer extends Component {
         super(props)
 
         this.state = {
-            view: 'portfolio',
+            view: 'transaction',
             purchaseFailed: false,
             fullPortfolioStockList: [],
             currentPortfolioStockPrices: {}
@@ -60,7 +60,6 @@ class StockViewContainer extends Component {
         fetch(endpoints.IEX + '?symbols=' + stockObj.ticker)
         .then(res => res.json())
         .then(stockArray => {
-            console.log(stockArray)
             if (!stockArray.length) {
                 this.setState({
                     purchaseFailed: 'No Match'
@@ -106,9 +105,10 @@ class StockViewContainer extends Component {
             this.setState(_ =>{
                 let arr = []
                 allStocks.map(stock => {
+                    stock.datepurchased = stock.datepurchased.slice(0,10);
                     arr.push(stock)
                 })
-                return { fullPortfolioStockList: arr}
+                return {fullPortfolioStockList: arr}
             })
             return allStocks;
         })
@@ -147,6 +147,8 @@ class StockViewContainer extends Component {
                             />
         } else {
             view = <TransactionAudit
+                    stocks={this.state.fullPortfolioStockList}
+                    user={this.props.user}
                          />
         }
 

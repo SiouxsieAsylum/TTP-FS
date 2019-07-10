@@ -59,6 +59,7 @@ class App extends Component {
   }
 
   setUserOnState = (fetchData) => {
+    localStorage.removeItem('authType');
     this.setState((prevState) =>{
       return {
         isLoggedIn: true,
@@ -71,7 +72,6 @@ class App extends Component {
   }
 
   setTokenOnLocalStorage = (user) => {
-    console.log(user)
     localStorage.setItem('sessionToken', user.sessiontoken);
     localStorage.setItem('sessionExpiry', user.sessionexpiry);
 
@@ -159,6 +159,7 @@ class App extends Component {
     if (!this.state.isLoggedIn){
       currentView = <Route exact path={"/:auth"} render={()=>(
         <Auth
+        setAuthType={this.setAuthType}
         isLoggedIn={this.state.isLoggedIn}
         authType={this.state.authType}
         authHandler={this.authHandler}
@@ -178,7 +179,7 @@ class App extends Component {
     }
     return (
       <Router>
-        <div className="App">
+        <div className="App page">
           <NavBar 
             setAuthType={this.setAuthType}
             logout={this.authRemover}
@@ -195,7 +196,9 @@ class App extends Component {
             { currentView }
 
         
-          <div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></div>
+          <footer>
+            <span className="icon-attribution">Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></span>
+          </footer>
         </div>
       </Router>
     );
