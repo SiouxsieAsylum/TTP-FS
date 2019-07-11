@@ -22,7 +22,6 @@ UserController.createUser = (req, res, next) => {
                 sessionToken: sessionObj.sessionToken,
                 sessionExpiry: sessionObj.sessionExpiry
             })
-        
             const portfolioPromise = userPromise.then(user => {
                 let defaultPortfolio = {
                     userId: user.userid,
@@ -31,7 +30,6 @@ UserController.createUser = (req, res, next) => {
                 }
                 return Portfolio.create(defaultPortfolio);
             })
-        
             Promise.all([userPromise, portfolioPromise])
             .then(([user, portfolio]) => {
                 res.json({user, portfolio})
@@ -62,12 +60,12 @@ UserController.getUserBySession = (req, res) => {
 UserController.updateBalance = (req, res) => {
     User.updateBalance({
         balance: req.body.balance,
-        userId: req.user.userid
+        userId: req.body.userId
     })
     .then(user => {
-        return user;
+        res.json(user);
     })
-    .catch(err => console.log(err))
+    .catch(err => {res.status(500).send("Could Not Update Balance")})
 }
 
 UserController.handleLogout = (req, res) => {

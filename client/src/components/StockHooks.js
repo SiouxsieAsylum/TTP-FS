@@ -15,6 +15,12 @@ const UseStockForm = (callback) => {
         let fullPurchase = {ticker, quantity};
 
         callback(fullPurchase);
+
+        let formInputs = Object.keys(inputs)
+
+        for (let key of formInputs){
+            setInputVal(inputs => ({...inputs, [key]: ""}))
+        }    
     };
 
     return {

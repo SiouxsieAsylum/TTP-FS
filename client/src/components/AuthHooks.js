@@ -13,6 +13,13 @@ const UseAuthForm = (submitCallback, routerCallback) => {
 
         submitCallback(fullUser);
         routerCallback()
+
+        let formInputs = Object.keys(inputs)
+
+        for (let key of formInputs){
+            setInputValues(inputs => ({...inputs, [key]: ""}))
+        }
+
     }
 
     const handleChange = (e) => {

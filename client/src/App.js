@@ -135,14 +135,14 @@ class App extends Component {
 
   updateUserBalance = (balance) => {
     let reqBody = {
-      balance: balance
+      balance: balance,
+      userId: this.state.user.userid
     }
     return fetch('api/user/purchase', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      credentials: "include",
       body: JSON.stringify(reqBody)
     })
     .then(res => res.json())
