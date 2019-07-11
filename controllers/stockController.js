@@ -1,5 +1,4 @@
 const Stock = require('../models/Stock');
-// const User = require('../models/User');
 const StockController = {};
 
 StockController.addStockToPortfolio = (req, res) => {
@@ -16,10 +15,8 @@ StockController.addStockToPortfolio = (req, res) => {
 }
 
 StockController.getAllTrades = (req, res, next) => {
-    console.log(req.user);
-    Promise.all([
-        Stock.getAllUserStocks(req.user.id),
-    ]).then(allData =>{
+    Stock.getAllUserStocks(req.user.userid)
+    .then(allData =>{
         res.json(allData)
     })
     .catch(err => console.log(error))

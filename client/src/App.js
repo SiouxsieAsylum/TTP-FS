@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Landing from './components/Landing';
+import LogOut from './components/Logout';
 import Auth from './components/Auth';
 import StockViewContainer from './components/StockViewContainer';
 
@@ -141,10 +142,12 @@ class App extends Component {
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: "include",
       body: JSON.stringify(reqBody)
     })
     .then(res => res.json())
     .then(user => {
+      console.log(user)
       this.setState(prevState => {
         user: Object.assign(prevState.user, user)
       })
@@ -179,26 +182,32 @@ class App extends Component {
     }
     return (
       <Router>
-        <div className="App page">
-          <NavBar 
-            setAuthType={this.setAuthType}
-            logout={this.authRemover}
-            setStockView={this.setStockView}
-            isLoggedIn={this.state.isLoggedIn}
-            user={this.state.user}
-            />
-            <Route exact path="/" render={()=>(   
-              <Landing
-                isLoggedIn={this.state.isLoggedIn} 
-                />       
-            )}/>
-            
-            { currentView }
+        <div className="img-container">
+          <div className="App page page-color">
+            <NavBar 
+              setAuthType={this.setAuthType}
+              logout={this.authRemover}
+              setStockView={this.setStockView}
+              isLoggedIn={this.state.isLoggedIn}
+              user={this.state.user}
+              />
+              <Route exact path="/" render={()=>(   
+                <Landing
+                  isLoggedIn={this.state.isLoggedIn} 
+                  />       
+              )}/>
 
-        
-          <footer>
-            <span className="icon-attribution">Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></span>
-          </footer>
+              <Route exact path="/logout" render={()=>(
+                <LogOut />
+              )} />
+              
+              { currentView }
+
+          
+            <footer>
+              <span className="icon-attribution">Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a> | Photo by Carlos Muza on Unsplash</span>
+            </footer>
+          </div>
         </div>
       </Router>
     );

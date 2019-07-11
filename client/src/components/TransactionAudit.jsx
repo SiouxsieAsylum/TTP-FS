@@ -4,15 +4,29 @@ const uuidv4 = require('uuid')
 
 const TransactionAudit = (props) => {
     return(
-        <ul className="transaction-list">
-        {   props.stocks.map(stock => {
-            return <li
-                key={uuidv4()}>
-                <p><span>{stock.datepurchased}</span>{props.user.name} purchased {stock.quantity} shares of {stock.tickersymbol.toUpperCase()}</p>
-            </li>
-        })  }
-        </ul>
+        <>
+        <h1>Full Audit</h1>
+        <t className="transaction-list">
+            <tr className="transaction-header">
+                <th colSpan="3">{props.user}'s Transactions</th>
+            </tr>
+            <tr className="transaction-header">
+                <th>Date Purchased</th>
+                <th>Ticker Symbol</th>
+                <th>Quantity</th>
+            </tr>
+            {  
+                props.stocks.map(stock => {
+                    return (<tr
+                            key={uuidv4()}>
+                                <td>{stock.datepurchased}</td>
+                                <td>{stock.tickersymbol}</td>
+                                <td>{stock.quantity}</td>
+                            </tr>)
+                    }) 
+            }
+        </t>
+        </>
     ) 
 }
-
 export default TransactionAudit;

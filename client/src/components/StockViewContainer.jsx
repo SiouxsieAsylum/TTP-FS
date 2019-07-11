@@ -1,25 +1,42 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Portfolio from './Portfolio';
 import TransactionAudit from './TransactionAudit';
 
 import endpoints from '../externals/endpoints';
 
+
+const PortfolioNav = (props) => {
+    const label = props.clickArg[0].toUpperCase() + props.clickArg.slice(1);
+    const [isHovered, toggleHover] = useState(false)
+
+    return (
+        <h2 
+            className={isHovered ? "hovered" : ""}
+            onMouseEnter={() => toggleHover(true)} 
+            onMouseLeave={() => toggleHover(false)}
+            onClick={() => props.clickFunction(props.clickArg)}>{label}</h2>
+    )
+}
+
 class StockViewContainer extends Component {
     constructor(props){
         super(props)
 
         this.state = {
-            view: 'transaction',
+            view: 'portfolio',
             purchaseFailed: false,
             fullPortfolioStockList: [],
-            currentPortfolioStockPrices: {}
+            currentPortfolioStockPrices: {},
+            allStocks:[],
         }
 
         this.purchaseStock = this.purchaseStock.bind(this);
         this.getPortfolioStocks = this.getPortfolioStocks.bind(this);
         this.fetchCurrentStockPrices = this.fetchCurrentStockPrices.bind(this);
         this.sendStocks = this.sendStocks.bind(this);
+        this.allUserStocks = this.allUserStocks.bind(this);
+        this.switchStockView = this.switchStockView.bind(this);
     }
 
     componentDidMount(){
@@ -72,7 +89,7 @@ class StockViewContainer extends Component {
                     let updatedBalance = this.props.user.balance - totalCost;
                     let today = new Date().toISOString();
                     let requestBody = {
-                        tickerSymbol: stockObj.ticker,
+                        tickerSymbol: stockObj.ticker.toUpperCase(),
                         quantity: parseInt(stockObj.quantity),
                         datePurchased: today,
                         buyingPrice: buyingPrice,
@@ -136,6 +153,44 @@ class StockViewContainer extends Component {
         .catch(err => console.log(err))
     }
 
+    allUserStocks(){
+        return fetch('api/stocks/all-trades', {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(trades => {
+            this.setState(prevState =>{
+                trades.map(trade => {
+                    prevState.allStocks.push(trade)
+                    return trade;
+                })
+                return {allTrades: prevState.allTrades }
+            })
+        })
+    }
+
+    switchStockView(chosenView){
+        if (chosenView === "transaction"){
+            if (!this.state.allStocks.length){
+                this.allUserStocks()
+                .then(_ => {
+                    this.setState({
+                        view: chosenView
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            } else {
+                this.setState({
+                    view: chosenView
+                })
+            }
+        }
+
+    }
+
     render(){
         let view;
         if (this.state.view === 'portfolio') {
@@ -144,18 +199,34 @@ class StockViewContainer extends Component {
                             currentPrices={this.state.currentPortfolioStockPrices}
                             user={this.props.user} 
                             purchaseStock={this.purchaseStock}
+                            purchaseFailed={this.state.purchaseFailed}
                             />
         } else {
             view = <TransactionAudit
-                    stocks={this.state.fullPortfolioStockList}
+                    stocks={this.state.allStocks}
                     user={this.props.user}
                          />
         }
 
-        if (!this.props.isLoggedIn) return <Redirect to="\" />
+        if (!this.props.isLoggedIn) return <Redirect to="/" />
 
         return (
             <main>
+                <div className="balance-nav">
+                    <h1 className="current-user-balance">$ { this.props.user.balance }</h1>
+                    <div className="flex-nav">
+                        <PortfolioNav 
+                            clickFunction={this.switchStockView}
+                            clickArg="portfolio"
+                            />
+                        <PortfolioNav 
+                            clickFunction={this.switchStockView}
+                            clickArg="transactions"
+                            />
+                    </div>
+                </div>
+                
+
                 {view}
             </main>
         )

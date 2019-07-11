@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Redirect, withRouter} from 'react-router-dom';
 import lifecycle from 'react-pure-lifecycle';
-import UseAuthForm from './AuthHooks'
+import CustomInput from './CustomInput';
+import Submit from './Submit';
+import UseAuthForm from './AuthHooks';
 
 
 const Auth = (props) => {
@@ -10,7 +12,7 @@ const Auth = (props) => {
     const params = props.match.params;
 
     useEffect(() => {
-        if (params.auth) props.setAuthType(params.auth)
+        if (params.auth && params.auth !== "portfolio") props.setAuthType(params.auth)
     })
 
     if (props.isLoggedIn) return <Redirect to="/portfolio" />
@@ -21,44 +23,47 @@ const Auth = (props) => {
         
         <form className="auth-form" onSubmit={handleSubmit}>
             { props.authType === 'register' && 
-            <>
-                <label htmlFor="name">Name</label>
-                <input
-                    onChange={handleChange}
-                    value={inputs.name}
-                    name="name" required/> 
+            <>  
+                <CustomInput 
+                    name="Name"
+                    label="Full Name"
+                    changeHandler={handleChange}
+                    inputs={inputs} />
 
+                <CustomInput 
+                    name="email"
+                    label="Email Address"
+                    type="email"
+                    changeHandler={handleChange}
+                    inputs={inputs} />
 
-                <label htmlFor="email">Email Address</label>
-                <input
-                    onChange={handleChange}
-                    type="email" 
-                    value={inputs.email}
-                    name="email" required/>
             </>
             }
 
             {props.authType === 'login' && 
                 <>
-                    <label htmlFor='username'>Email Address</label>
-                    <input
-                        onChange={handleChange}
-                        type="email" 
-                        value={inputs.username}
-                        name='username' required/>
+
+                    <CustomInput 
+                        name="username"
+                        label="Email Address"
+                        type="email"
+                        changeHandler={handleChange}
+                        inputs={inputs} />
+
                 </>
             }
             
 
             {props.authType && 
             <>
-                <label htmlFor="password">Password</label>
-                <input
-                    onChange={handleChange}
-                    type="password" 
-                    value={inputs.password}
-                    name="password" required/>
-                <input type="submit" />
+                <CustomInput 
+                    name="password"
+                    label="Password"
+                    type="password"
+                    changeHandler={handleChange}
+                    inputs={inputs} />
+
+                <Submit />
             </>
         }
         </form>

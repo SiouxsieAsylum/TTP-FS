@@ -22,7 +22,6 @@ const NavBar = (props) => {
     if (props.isLoggedIn) {
         return (
             <ul className="nav-bar">
-                $ { props.user.balance }
                 <NavLink
                     clickFunction={props.logout}
                     clickArg="logout"
