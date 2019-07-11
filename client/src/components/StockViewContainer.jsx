@@ -79,7 +79,7 @@ class StockViewContainer extends Component {
         .then(stockArray => {
             if (!stockArray.length) {
                 this.setState({
-                    purchaseFailed: 'No Match'
+                    purchaseFailed: 'No Asset By That Symbol'
                 })
             } else {
 
@@ -120,12 +120,13 @@ class StockViewContainer extends Component {
         .then(res => res.json())
         .then(allStocks => {
             this.setState(_ =>{
+
                 let arr = []
                 allStocks.map(stock => {
                     stock.datepurchased = stock.datepurchased.slice(0,10);
                     arr.push(stock)
                 })
-                return {fullPortfolioStockList: arr}
+                return {fullPortfolioStockList: arr, purchaseFailed: false}
             })
             return allStocks;
         })
@@ -154,7 +155,7 @@ class StockViewContainer extends Component {
     }
 
     allUserStocks(){
-        return fetch('api/stocks/all-trades', {
+        return fetch(`api/stocks/all-trades/${this.props.user.userid}`, {
             method: 'GET',
             credentials: 'include'
         })
@@ -171,7 +172,7 @@ class StockViewContainer extends Component {
     }
 
     switchStockView(chosenView){
-        if (chosenView === "transaction"){
+        if (chosenView === "transactions"){
             if (!this.state.allStocks.length){
                 this.allUserStocks()
                 .then(_ => {
@@ -187,6 +188,10 @@ class StockViewContainer extends Component {
                     view: chosenView
                 })
             }
+        } else {
+            this.setState({
+                view: chosenView
+            })
         }
 
     }

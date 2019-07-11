@@ -4,6 +4,6 @@ const StockRouter = express.Router();
 
 StockRouter.post('/new', StockController.addStockToPortfolio);
 
-StockRouter.get('/all-trades', StockController.getAllTrades);
+StockRouter.get('/all-trades/:userid', StockController.getAllTrades);
 
 module.exports = StockRouter;

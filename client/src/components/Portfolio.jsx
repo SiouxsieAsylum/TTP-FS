@@ -42,7 +42,9 @@ const Portfolio = (props) => {
             <div>
                 <AddStock 
                     user={props.user} 
-                    purchaseStock={props.purchaseStock} />
+                    purchaseStock={props.purchaseStock} 
+                    purchaseFailed={props.purchaseFailed}
+                    />
             </div>
         </main>
     )

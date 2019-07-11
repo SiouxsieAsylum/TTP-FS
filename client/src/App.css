@@ -230,6 +230,10 @@ button, input[type=submit]{
   margin-bottom: 0;
 }
 
+.warning {
+  color: rgb(135, 27, 40)
+}
+
 /* //////////////////////////// STOCK VIEWS //////////////////////////////// */
 
 .balance-nav {
@@ -263,15 +267,20 @@ button, input[type=submit]{
 /* /////////////////////// TRANSACTION AUDIT ///////////////////////////// */
 
 .transaction-list {
-  color: rgb(0, 99, 93);
-  font-weight: bold;
+  max-height: 60vh;
+  overflow: auto;
+  width: 100vw;
+  text-align: center;
 }
 
+.top-level-table-header{
+  margin-bottom: 20px;
+  font-size: 20px;
+}
 
-.transaction-header {
-  background-color: rgb(45, 42, 50);
-  color: rgb(250, 253, 247);
-  font-weight: bold;
+.large-header {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 /* //////////////////////////// FOOTER /////////////////////////////////// */

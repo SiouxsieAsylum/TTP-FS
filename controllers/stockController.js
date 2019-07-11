@@ -15,7 +15,7 @@ StockController.addStockToPortfolio = (req, res) => {
 }
 
 StockController.getAllTrades = (req, res, next) => {
-    Stock.getAllUserStocks(req.user.userid)
+    Stock.getAllUserStocks(req.params.userid)
     .then(allData =>{
         res.json(allData)
     })

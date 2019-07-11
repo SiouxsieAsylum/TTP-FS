@@ -6,7 +6,7 @@ Stock.create = stock => {
 }
 
 Stock.getAllUserStocks = userId => {
-    return db.any(`SELECT stocks.*, portfolios.name FROM stocks JOIN portfolios ON stocks.portfolioId = portfolios.portfolioId JOIN users ON portfolios.userId = users.userId where users.userId = $1`, [userId])
+    return db.any(`SELECT stocks.*, portfolios.name FROM stocks JOIN portfolios ON stocks.portfolioId = portfolios.portfolioId JOIN users ON portfolios.userId = users.userId where users.userId = $1 ORDER BY datePurchased DESC`, [userId])
 }
 
 module.exports = Stock;
